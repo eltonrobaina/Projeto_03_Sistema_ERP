@@ -105,7 +105,8 @@ class Ui_formCliente(object):
 
         ### BOTÕES SISTEMA ###
         self.bt_retornar.clicked.connect(lambda: self.sairTela(formCliente))
-        self.bt_pesquisarGeral.clicked.connect(self.consultarGeral)
+        self.bt_pesquisarGeral.clicked.connect(self.pesquisarGeral)
+        self.bt_pesquisar.clicked.connect(self.pesquisarCliente)
     
 
     ### FUNÇÕES SISTEMA ###
@@ -114,8 +115,40 @@ class Ui_formCliente(object):
             formCliente.close()
 
 
-    ## Consulta tabelaCliente geral ##
-    def consultarGeral(self):
+    ## Consulta tabelaCliente por nome ##
+    def pesquisarCliente(self):
+        mydb = mysql.connector.connect(
+                host = 'localhost',
+                user = 'root',
+                password = 'CursoPyQt2022#',
+                database = 'python'
+        )
+
+        mycursor = mydb.cursor()
+        nomeConsulta = self.txt_nomeCliente.text()
+        consultaSQL = "SELECT * FROM cliente WHERE nome LIKE '" + nomeConsulta + "%'"
+        mycursor.execute(consultaSQL)
+        myresult = mycursor.fetchall()
+        df = pd.DataFrame(myresult, columns = ['ID', 'Nome', 'Telefone', 'Cidade'])
+        self.all_data = df
+
+        # Carrega o arquivo na tabela tb_cliente #
+        numRows = len(self.all_data.index)
+        self.tb_cliente.setColumnCount(len(self.all_data.columns))
+        self.tb_cliente.setRowCount(numRows)
+        self.tb_cliente.setHorizontalHeaderLabels(self.all_data.columns)
+
+        for i in range(numRows):
+            for j in range(len(self.all_data.columns)):
+                self.tb_cliente.setItem(i, j, QTableWidgetItem(str(self.all_data.iat[i,j])))
+
+        self.tb_cliente.resizeColumnsToContents()
+        self.tb_cliente.resizeRowsToContents()
+
+        mycursor.close()
+
+    ## Pesquisar tabelaCliente Geral##
+    def pesquisarGeral(self):
         mydb = mysql.connector.connect(
                 host = 'localhost',
                 user = 'root',
@@ -126,7 +159,7 @@ class Ui_formCliente(object):
         mycursor = mydb.cursor()
         mycursor.execute('SELECT * FROM cliente')
         myresult = mycursor.fetchall()
-        df = pd.DataFrame(myresult, columns=['ID','Nome','Telefone','Cidade'])
+        df = pd.DataFrame(myresult, columns = ['ID', 'Nome', 'Telefone', 'Cidade'])
         self.all_data = df
 
         # Carrega o arquivo na tabela tb_cliente #
@@ -136,9 +169,9 @@ class Ui_formCliente(object):
         self.tb_cliente.setHorizontalHeaderLabels(self.all_data.columns)
 
         for i in range(numRows):
-                for j in range(len(self.all_data.columns)):
-                        self.tb_cliente.setItem(i, j, QTableWidgetItem(str(self.all_data.iat[i,j])))
-        
+            for j in range(len(self.all_data.columns)):
+                self.tb_cliente.setItem(i, j, QTableWidgetItem(str(self.all_data.iat[i,j])))
+
         self.tb_cliente.resizeColumnsToContents()
         self.tb_cliente.resizeRowsToContents()
 
