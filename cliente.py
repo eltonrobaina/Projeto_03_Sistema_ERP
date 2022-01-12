@@ -9,6 +9,11 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QTableWidget, QTableWidgetItem
+
+### Libs diversas ###
+import mysql.connector
+import pandas as pd
 
 
 class Ui_formCliente(object):
@@ -100,12 +105,45 @@ class Ui_formCliente(object):
 
         ### BOTÕES SISTEMA ###
         self.bt_retornar.clicked.connect(lambda: self.sairTela(formCliente))
+        self.bt_pesquisarGeral.clicked.connect(self.consultarGeral)
     
 
-    #### FUNÇÕES SISTEMA ###
+    ### FUNÇÕES SISTEMA ###
     ## Fechar telaCliente ##
     def sairTela(self, formCliente):
             formCliente.close()
+
+
+    ## Consulta tabelaCliente geral ##
+    def consultarGeral(self):
+        mydb = mysql.connector.connect(
+                host = 'localhost',
+                user = 'root',
+                password = 'CursoPyQt2022#',
+                database = 'python'
+        )
+
+        mycursor = mydb.cursor()
+        mycursor.execute('SELECT * FROM cliente')
+        myresult = mycursor.fetchall()
+        df = pd.DataFrame(myresult, columns=['ID','Nome','Telefone','Cidade'])
+        self.all_data = df
+
+        # Carrega o arquivo na tabela tb_cliente #
+        numRows = len(self.all_data.index)
+        self.tb_cliente.setColumnCount(len(self.all_data.columns))
+        self.tb_cliente.setRowCount(numRows)
+        self.tb_cliente.setHorizontalHeaderLabels(self.all_data.columns)
+
+        for i in range(numRows):
+                for j in range(len(self.all_data.columns)):
+                        self.tb_cliente.setItem(i, j, QTableWidgetItem(str(self.all_data.iat[i,j])))
+        
+        self.tb_cliente.resizeColumnsToContents()
+        self.tb_cliente.resizeRowsToContents()
+
+        mycursor.close()
+
 
 
 
