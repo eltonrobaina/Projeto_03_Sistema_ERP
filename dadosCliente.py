@@ -11,6 +11,20 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
+### Imports sistema ###
+import mysql.connector
+import pandas as pd
+
+### Arquivo variaveis de controle ###
+import variaveisControle
+
+### Variáveis de conexão com o banco de dados ###
+host = variaveisControle.host
+user = variaveisControle.user
+password = variaveisControle.password
+database = variaveisControle.database
+
+
 class Ui_formDadosCliente(object):
     def setupUi(self, formDadosCliente):
         formDadosCliente.setObjectName("formDadosCliente")
@@ -60,8 +74,49 @@ class Ui_formDadosCliente(object):
         self.lb_cidade.setText(_translate("formDadosCliente", "Cidade:"))
         self.bt_cancelar.setToolTip(_translate("formDadosCliente", "<html><head/><body><p><img src=\":/icon_cliente/icons/cliente.png\"/></p></body></html>"))
         self.bt_cadastrar.setToolTip(_translate("formDadosCliente", "<html><head/><body><p><img src=\":/icon_cliente/icons/cliente.png\"/></p></body></html>"))
-import icon_cadastrar_rc
-import icon_cancelar_rc
+        
+        
+        ### Botoes sistema ###
+        self.bt_cancelar.clicked.connect(lambda: self.sairTela(formDadosCliente))
+        self.bt_cadastrar.clicked.connect(self.cadastrarCliente)
+
+    
+    ### FUNCOES SISTEMA ###
+    ## Sair formDadosCliente ##
+
+    def sairTela(self, formDadosCliente):
+        formDadosCliente.close()
+
+    ## CADASTRAR CLIENTE ##
+    def cadastrarCliente(self):
+        nomeCliente = self.txt_nome.text()
+        telefoneCliente = self.txt_telefone.text()
+        cidadeCliente = self.txt_cidade.text()
+
+        mydb = mysql.connector.connect(
+            host = host,
+            user = user,
+            password = password,
+            database = database
+        )
+        
+        mycursor = mydb.cursor()
+        sql = "INSERT INTO cliente (Nome, Telefone, Cidade) values (%s, %s, %s)"
+        val = (nomeCliente, telefoneCliente, cidadeCliente)
+        mycursor.execute(sql,val)
+        mydb.commit()
+        print(mycursor.rowcount, 'record(s) insert')
+        mycursor.close()
+        self.txt_nome.setText("")
+        self.txt_telefone.setText("")
+        self.txt_cidade.setText("")
+
+
+
+
+### Icons do Sistema ###
+import icon_cadastrar
+import icon_cancelar
 
 
 if __name__ == "__main__":

@@ -15,9 +15,12 @@ from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QTableWidget, QT
 import mysql.connector
 import pandas as pd
 
+### Import forms sistema ###
+from dadosCliente import Ui_formDadosCliente
+
+
 ### Import das Variaveis Controle ###
 import variaveisControle
-
 
 ### Variáveis de conexão com o banco de dados ###
 host = variaveisControle.host
@@ -118,6 +121,7 @@ class Ui_formCliente(object):
         self.bt_retornar.clicked.connect(lambda: self.sairTela(formCliente))
         self.bt_pesquisarGeral.clicked.connect(self.pesquisarGeral)
         self.bt_pesquisar.clicked.connect(self.pesquisarCliente)
+        self.bt_adicionar.clicked.connect(self.cadastrarCliente)
     
 
     ### FUNÇÕES SISTEMA ###
@@ -186,6 +190,13 @@ class Ui_formCliente(object):
         self.tb_cliente.resizeRowsToContents()
 
         mycursor.close()
+
+    ## Funcao cadastrarCliente ##
+    def cadastrarCliente(self):
+            self.formDadosCliente = QtWidgets.QWidget()
+            self.ui = Ui_formDadosCliente()
+            self.ui.setupUi(self.formDadosCliente)
+            self.formDadosCliente.show()
 
 ### Imagens Sistema ###
 import icon_adicionar
