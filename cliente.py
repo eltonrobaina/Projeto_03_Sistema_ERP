@@ -15,6 +15,17 @@ from PyQt5.QtWidgets import QApplication, QWidget, QFileDialog, QTableWidget, QT
 import mysql.connector
 import pandas as pd
 
+### Import das Variaveis Controle ###
+import variaveisControle
+
+
+### Variáveis de conexão com o banco de dados ###
+host = variaveisControle.host
+user = variaveisControle.user
+password = variaveisControle.password
+database = variaveisControle.database
+
+
 
 class Ui_formCliente(object):
     def setupUi(self, formCliente):
@@ -112,16 +123,15 @@ class Ui_formCliente(object):
     ### FUNÇÕES SISTEMA ###
     ## Fechar telaCliente ##
     def sairTela(self, formCliente):
-            formCliente.close()
-
-
+        formCliente.close()
+    
     ## Consulta tabelaCliente por nome ##
     def pesquisarCliente(self):
         mydb = mysql.connector.connect(
-                host = 'localhost',
-                user = 'root',
-                password = 'CursoPyQt2022#',
-                database = 'python'
+                host = host,
+                user = user,
+                password = password,
+                database = database
         )
 
         mycursor = mydb.cursor()
@@ -150,10 +160,10 @@ class Ui_formCliente(object):
     ## Pesquisar tabelaCliente Geral##
     def pesquisarGeral(self):
         mydb = mysql.connector.connect(
-                host = 'localhost',
-                user = 'root',
-                password = 'CursoPyQt2022#',
-                database = 'python'
+                host = host,
+                user = user,
+                password = password,
+                database = database
         )
 
         mycursor = mydb.cursor()
@@ -176,10 +186,6 @@ class Ui_formCliente(object):
         self.tb_cliente.resizeRowsToContents()
 
         mycursor.close()
-
-
-
-
 
 ### Imagens Sistema ###
 import icon_adicionar

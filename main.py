@@ -13,6 +13,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 ### Import telas sistema ###
 from cliente import Ui_formCliente
 
+### Import de telas ###
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
