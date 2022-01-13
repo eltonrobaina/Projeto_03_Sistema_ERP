@@ -118,12 +118,13 @@ class Ui_formDadosCliente(object):
             self.txt_nome.setText(nomeCliente)
             self.txt_telefone.setText(telefoneCliente)
             self.txt_cidade.setText(cidadeCliente)
-        elif variaveisControle.tipoTelaDadosCliente == 'consultar':
+
+        elif variaveisControle.tipoTelaDadosCliente == 'alterar':
             print('dadosCliente: ', variaveisControle.tipoTelaDadosCliente)
-            self.txt_nome.setEnabled(False)
-            self.txt_telefone.setEnabled(False)
-            self.txt_cidade.setEnabled(False)
-            self.bt_cadastrar.setEnabled(False)
+            self.txt_nome.setEnabled(True)
+            self.txt_telefone.setEnabled(True)
+            self.txt_cidade.setEnabled(True)
+            self.bt_cadastrar.setEnabled(True)
             # Conexao com o banco de dados #
             mydb = mysql.connector.connect(
                 host = host,
@@ -182,6 +183,27 @@ class Ui_formDadosCliente(object):
         self.txt_nome.setText("")
         self.txt_telefone.setText("")
         self.txt_cidade.setText("")
+
+
+    ## ALTERAR CLIENTE ##
+    def alterarCliente(self):
+        nomeCliente = self.txt_nome.text()
+        telefoneCliente = self.txt_telefone.text()
+        cidadeCliente = self.txt_cidade.text()
+
+        mydb = mysql.connector.connect(
+            host = host,
+            user = user,
+            password = password,
+            database = database
+        )
+        
+        mycursor = mydb.cursor()
+        sql = "UPDATE cliente SET Nome = '" + nomeCliente + "', Telefone = '" + telefoneCliente + "', Cidade = '" + cidadeCliente + "' WHERE idCliente = '" + variaveisControle.idConsulta + "'"
+        mycursor.execute(sql)
+        mydb.commit()
+        print(mycursor.rowcount, 'record(s) altered')
+        mycursor.close()
 
 
 

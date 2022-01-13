@@ -123,7 +123,8 @@ class Ui_formCliente(object):
         self.bt_pesquisar.clicked.connect(self.pesquisarCliente)
         self.bt_adicionar.clicked.connect(self.cadastrarCliente)
         self.bt_consultar.clicked.connect(self.consultarCliente)
-        self.bt_alterar.clicked.connect(self.alteraCliente)
+        self.bt_alterar.clicked.connect(self.alterarCliente)
+        self.bt_excluir.clicked.connect(self.excluirCliente)
     
 
     ### FUNÇÕES SISTEMA ###
@@ -202,45 +203,79 @@ class Ui_formCliente(object):
             self.ui.setupUi(self.formDadosCliente)
             self.formDadosCliente.show()
 
-    ## Funcao consultarCliente ##
+    ## Função consultarCliente ##
     def consultarCliente(self):
-            # Tipo Tela dadosCliente #
-            variaveisControle.tipoTelaDadosCliente = 'consultar'
-            print('formCliente: ', variaveisControle.tipoTelaDadosCliente)
-            # ID cliente para consulta #
-            line = self.tb_cliente.currentRow()
-            item = self.tb_cliente.item(line, 0)
-            variaveisControle.idConsulta = item.text()
-            print('idConsulta: ', variaveisControle.idConsulta)
-            # Abertura da tela consultarCliente # 
-            self.formDadosCliente = QtWidgets.QWidget()
-            self.ui = Ui_formDadosCliente()
-            self.ui.setupUi(self.formDadosCliente)
-            self.formDadosCliente.show()
+        # Tipo Tela dadosCliente #
+        variaveisControle.tipoTelaDadosCliente = 'consultar'
+        print('formCliente: ', variaveisControle.tipoTelaDadosCliente)
+        # ID cliente para consulta #
+        line = self.tb_cliente.currentRow()
+        item = self.tb_cliente.item(line, 0)
+        variaveisControle.idConsulta = item.text()
+        print('idConsulta: ', variaveisControle.idConsulta)
+        # Abertura da tela consultarCliente #
+        self.formDadosCliente = QtWidgets.QWidget()
+        self.ui = Ui_formDadosCliente()
+        self.ui.setupUi(self.formDadosCliente)
+        self.formDadosCliente.show()
 
-    ## Funcao alterarCliente ##
+    ## Função alterarCliente ##
     def alterarCliente(self):
-            # Tipo Tela dadosCliente #
-            variaveisControle.tipoTelaDadosCliente = 'alterar'
-            print('formCliente: ', variaveisControle.tipoTelaDadosCliente)
-            # ID cliente para consulta #
-            line = self.tb_cliente.currentRow()
-            item = self.tb_cliente.item(line, 0)
-            variaveisControle.idConsulta = item.text()
-            print('idConsulta: ', variaveisControle.idConsulta)
-            # Abertura da tela consultarCliente # 
-            self.formDadosCliente = QtWidgets.QWidget()
-            self.ui = Ui_formDadosCliente()
-            self.ui.setupUi(self.formDadosCliente)
-            self.formDadosCliente.show()
+        # Tipo Tela dadosCliente #
+        variaveisControle.tipoTelaDadosCliente = 'alterar'
+        print('formCliente: ', variaveisControle.tipoTelaDadosCliente)
+        # ID cliente para consulta #
+        line = self.tb_cliente.currentRow()
+        item = self.tb_cliente.item(line, 0)
+        variaveisControle.idConsulta = item.text()
+        print('idConsulta: ', variaveisControle.idConsulta)
+        # Abertura da tela consultarCliente #
+        self.formDadosCliente = QtWidgets.QWidget()
+        self.ui = Ui_formDadosCliente()
+        self.ui.setupUi(self.formDadosCliente)
+        self.formDadosCliente.show()
 
+    ## Função excluirCliente ##
+    def excluirCliente(self):
+        line = self.tb_cliente.currentRow()
+        item = self.tb_cliente.item(line, 0)
+        idCliente = item.text()
 
+        # Conexao com o banco de dados #
+        mydb = mysql.connector.connect(
+                host = host,
+                user = user,
+                password = password,
+                database = database
+        )
+        mycursor = mydb.cursor()
+        sql = "DELETE FROM cliente WHERE idCliente = '" + idCliente + "'"
+        mycursor.execute(sql)
+        mydb.commit()
+        print(mycursor.rowcount, 'record(s) exclused')
 
+        # Atualizar tabela com consulta completa #
 
+        mycursor.execute('SELECT * FROM cliente')
+        myresult = mycursor.fetchall()
+        df = pd.DataFrame(myresult, columns = ['ID', 'Nome', 'Telefone', 'Cidade'])
+        self.all_data = df
 
+        # Carrega o arquivo na tabela tb_cliente #
+        numRows = len(self.all_data.index)
+        self.tb_cliente.setColumnCount(len(self.all_data.columns))
+        self.tb_cliente.setRowCount(numRows)
+        self.tb_cliente.setHorizontalHeaderLabels(self.all_data.columns)
 
+        for i in range(numRows):
+            for j in range(len(self.all_data.columns)):
+                self.tb_cliente.setItem(i, j, QTableWidgetItem(str(self.all_data.iat[i,j])))
 
+        self.tb_cliente.resizeColumnsToContents()
+        self.tb_cliente.resizeRowsToContents()
 
+        mycursor.close()
+        
 ### Imagens Sistema ###
 import icon_adicionar
 import icon_alterar

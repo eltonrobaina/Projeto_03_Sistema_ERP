@@ -1,5 +1,5 @@
-### Variaveis formCliente ###
-tipoTelaDadosCliente = '' #incluir, alterar e consultar
+### Variáveis formDadosCliente ###
+tipoTelaDadosCliente = '' # incluir, alterar e consultar
 idConsulta = ''
 
 
