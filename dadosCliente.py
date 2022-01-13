@@ -78,13 +78,85 @@ class Ui_formDadosCliente(object):
         
         ### Botoes sistema ###
         self.bt_cancelar.clicked.connect(lambda: self.sairTela(formDadosCliente))
-        self.bt_cadastrar.clicked.connect(self.cadastrarCliente)
+        if variaveisControle.tipoTelaDadosCliente == 'incluir':
+            self.bt_cadastrar.clicked.connect(self.cadastrarCliente)
+        if variaveisControle.tipoTelaDadosCliente == 'alterar':
+            self.bt_cadastrar.clicked.connect(self.alterarCliente)
+        
+        ### Condicoes da tela ###
+        ## Tipos form tela ##
+        if variaveisControle.tipoTelaDadosCliente == 'incluir':
+            print('dadosCliente: ', variaveisControle.tipoTelaDadosCliente)
+            self.txt_nome.setEnabled(True)
+            self.txt_telefone.setEnabled(True)
+            self.txt_cidade.setEnabled(True)
+            self.bt_cadastrar.setEnabled(True)
+        elif variaveisControle.tipoTelaDadosCliente == 'consultar':
+            print('dadosCliente: ', variaveisControle.tipoTelaDadosCliente)
+            self.txt_nome.setEnabled(False)
+            self.txt_telefone.setEnabled(False)
+            self.txt_cidade.setEnabled(False)
+            self.bt_cadastrar.setEnabled(False)
+            # Conexao com o banco de dados #
+            mydb = mysql.connector.connect(
+                host = host,
+                user = user,
+                password = password,
+                database = database
+            )
+            mycursor = mydb.cursor()
+            consultaSQL = "SELECT * FROM cliente WHERE idCliente = '" + variaveisControle.idConsulta + "'"
+            mycursor.execute(consultaSQL)
+            myresult = mycursor.fetchall()
+            mycursor.close()
+            # Converte resultado BD para DataFrame #
+            df = pd.DataFrame(myresult, columns = ['ID', 'Nome', 'Telefone', 'Cidade'])
+            nomeCliente = df['Nome'][0]
+            telefoneCliente = df['Telefone'][0]
+            cidadeCliente = df['Cidade'][0]
+            # Seta variaveis  na tela do sistema #
+            self.txt_nome.setText(nomeCliente)
+            self.txt_telefone.setText(telefoneCliente)
+            self.txt_cidade.setText(cidadeCliente)
+        elif variaveisControle.tipoTelaDadosCliente == 'consultar':
+            print('dadosCliente: ', variaveisControle.tipoTelaDadosCliente)
+            self.txt_nome.setEnabled(False)
+            self.txt_telefone.setEnabled(False)
+            self.txt_cidade.setEnabled(False)
+            self.bt_cadastrar.setEnabled(False)
+            # Conexao com o banco de dados #
+            mydb = mysql.connector.connect(
+                host = host,
+                user = user,
+                password = password,
+                database = database
+            )
+            mycursor = mydb.cursor()
+            consultaSQL = "SELECT * FROM cliente WHERE idCliente = '" + variaveisControle.idConsulta + "'"
+            mycursor.execute(consultaSQL)
+            myresult = mycursor.fetchall()
+            mycursor.close()
+            # Converte resultado BD para DataFrame #
+            df = pd.DataFrame(myresult, columns = ['ID', 'Nome', 'Telefone', 'Cidade'])
+            nomeCliente = df['Nome'][0]
+            telefoneCliente = df['Telefone'][0]
+            cidadeCliente = df['Cidade'][0]
+            # Seta variaveis  na tela do sistema #
+            self.txt_nome.setText(nomeCliente)
+            self.txt_telefone.setText(telefoneCliente)
+            self.txt_cidade.setText(cidadeCliente)
+
+
+
+
+
 
     
     ### FUNCOES SISTEMA ###
     ## Sair formDadosCliente ##
 
     def sairTela(self, formDadosCliente):
+        variaveisControle.tipoTelaDadosCliente == ''
         formDadosCliente.close()
 
     ## CADASTRAR CLIENTE ##

@@ -122,6 +122,8 @@ class Ui_formCliente(object):
         self.bt_pesquisarGeral.clicked.connect(self.pesquisarGeral)
         self.bt_pesquisar.clicked.connect(self.pesquisarCliente)
         self.bt_adicionar.clicked.connect(self.cadastrarCliente)
+        self.bt_consultar.clicked.connect(self.consultarCliente)
+        self.bt_alterar.clicked.connect(self.alteraCliente)
     
 
     ### FUNÇÕES SISTEMA ###
@@ -193,10 +195,51 @@ class Ui_formCliente(object):
 
     ## Funcao cadastrarCliente ##
     def cadastrarCliente(self):
+            variaveisControle.tipoTelaDadosCliente = 'incluir'
+            print('formCliente: ', variaveisControle.tipoTelaDadosCliente)
             self.formDadosCliente = QtWidgets.QWidget()
             self.ui = Ui_formDadosCliente()
             self.ui.setupUi(self.formDadosCliente)
             self.formDadosCliente.show()
+
+    ## Funcao consultarCliente ##
+    def consultarCliente(self):
+            # Tipo Tela dadosCliente #
+            variaveisControle.tipoTelaDadosCliente = 'consultar'
+            print('formCliente: ', variaveisControle.tipoTelaDadosCliente)
+            # ID cliente para consulta #
+            line = self.tb_cliente.currentRow()
+            item = self.tb_cliente.item(line, 0)
+            variaveisControle.idConsulta = item.text()
+            print('idConsulta: ', variaveisControle.idConsulta)
+            # Abertura da tela consultarCliente # 
+            self.formDadosCliente = QtWidgets.QWidget()
+            self.ui = Ui_formDadosCliente()
+            self.ui.setupUi(self.formDadosCliente)
+            self.formDadosCliente.show()
+
+    ## Funcao alterarCliente ##
+    def alterarCliente(self):
+            # Tipo Tela dadosCliente #
+            variaveisControle.tipoTelaDadosCliente = 'alterar'
+            print('formCliente: ', variaveisControle.tipoTelaDadosCliente)
+            # ID cliente para consulta #
+            line = self.tb_cliente.currentRow()
+            item = self.tb_cliente.item(line, 0)
+            variaveisControle.idConsulta = item.text()
+            print('idConsulta: ', variaveisControle.idConsulta)
+            # Abertura da tela consultarCliente # 
+            self.formDadosCliente = QtWidgets.QWidget()
+            self.ui = Ui_formDadosCliente()
+            self.ui.setupUi(self.formDadosCliente)
+            self.formDadosCliente.show()
+
+
+
+
+
+
+
 
 ### Imagens Sistema ###
 import icon_adicionar
